@@ -13,4 +13,6 @@ router.route('/').post(createBook).get(getAllBooks)
 
 router.route('/:id').get(getBook).delete(deleteBook).patch(updateBook)
 
+//router.route('/uploads').post(uploadBookImage);
+
 module.exports = router

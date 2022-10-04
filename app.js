@@ -1,6 +1,7 @@
 const express= require('express');
 const app = express();
 require('express-async-errors')
+const fileUpload = require('express-fileupload');
 const Books=require('./routes/books');
 const connectDB=require('./db/connect');
 const errorHandlerMiddleware=require('./middleware/error-handler')
@@ -8,12 +9,13 @@ require('dotenv').config();
 
 //middleware
 app.use(express.json());
-app.use(errorHandlerMiddleware)
+
+app.use(fileUpload({ useTempFiles: true }));
 
 //routes
 app.use('/api/v1/books',Books)
 
-
+app.use(errorHandlerMiddleware)
 const port= process.env.PORT||4000
 
 const start = async () => {

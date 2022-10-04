@@ -1,6 +1,7 @@
 //importing the customErrors
 const { CustomAPIError } = require("../errors/custom-errors");
 const Book=require("../model/book");
+const path=require("path");
 
 const getAllBooks=async(req,res)=>
 {  
@@ -8,11 +9,32 @@ const getAllBooks=async(req,res)=>
     res.status(200).json({book})
 }
 //creating a new book 
-const  createBook=async(req,res,next)=>
+const  createBook=async(req,res)=>
 {
-
-    const book=await Book.create(req.body)
+  if (!req.files) {
+    throw new CustomAPIError('No File Uploaded',404);
+  }
+  const bookImage = req.files.Imageurl;
+  if (!bookImage.mimetype.startsWith('image')) {
+    throw new CustomAPIError('Please Upload Image',404);
+  }
+  const maxSize = 1024 * 1024;
+  if (bookImage.size > maxSize) {
+    throw new CustomAPIError('Please upload image smaller 1MB',404);
+  }
+  const imagePath = path.join(
+    __dirname,
+    '../public/uploads/' + `${bookImage.name}`
+  )
+    await bookImage.mv(imagePath);
+  req.body.Imageurl=`/uploads/${bookImage.name}`
   
+    const book=await Book.create(req.body)
+    const {error}=await book.joiValidate(req.body)
+    if(error)
+    {
+        throw new CustomAPIError(`error in data:${error.message}`,401)
+    }
     res.status(201).json({book})
 }
 
