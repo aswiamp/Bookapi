@@ -8,6 +8,7 @@ const {
   updateBook,
   getBook,
 } = require('../controllers/books')
+require('../middleware/validator-joi')
 
 router.route('/').post(createBook).get(getAllBooks)
 

@@ -33,7 +33,7 @@ bookSchema.methods.joiValidate=function(obj)
 
 const valSchema=joi.object({
 
-    name:joi.string().required().min(6).max(56).trim(),
+    name:joi.string().required().min(6).max(56),
     Imageurl:joi.string(),
     Author:joi.string().required().min(10).max(30),
     pages:joi.number().min(100).max(555),
