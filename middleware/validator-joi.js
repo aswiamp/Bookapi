@@ -13,13 +13,13 @@ const bookSchema=(req,res,next)=>
     })
     //schema options
     const options={
-        abortEarly:false,//include all errors
+        abortEarly:false//include all errors
         
     }
     //validate request body 
-    const {error,value}=schema.validate(req.body.options);
-    if(errors){
-        throw new CustomAPIError("validation error",404)
+    const {error,value}=schema.validate(req.body,options);
+    if(error){
+        throw new CustomAPIError(`validation error:${error.message}`,404)
     }
     else{
         req.body=value

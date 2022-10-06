@@ -30,11 +30,6 @@ const  createBook=async(req,res)=>
   req.body.Imageurl=`/uploads/${bookImage.name}`
   
     const book=await Book.create(req.body)
-    const {error}=await book.joiValidate(req.body)
-    if(error)
-    {
-        throw new CustomAPIError(`error in data:${error.message}`,401)
-    }
     res.status(201).json({book})
 }
 

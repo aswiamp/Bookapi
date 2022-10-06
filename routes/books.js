@@ -1,6 +1,6 @@
 const express = require('express')
-
 const router = express.Router()
+const validationMiddleware=require("../middleware/validator-joi")
 const {
   createBook,
   deleteBook,
@@ -8,9 +8,9 @@ const {
   updateBook,
   getBook,
 } = require('../controllers/books')
-require('../middleware/validator-joi')
+//require('../middleware/validator-joi')
 
-router.route('/').post(createBook).get(getAllBooks)
+router.route('/').post(validationMiddleware,createBook).get(getAllBooks)
 
 router.route('/:id').get(getBook).delete(deleteBook).patch(updateBook)
 
