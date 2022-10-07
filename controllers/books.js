@@ -1,11 +1,15 @@
 //importing the customErrors
 const { CustomAPIError } = require("../errors/custom-errors");
 const Book=require("../model/book");
+const APIFeatures=require("../utills/apiFeatures")
+const short=require('shortid')
 const path=require("path");
 
-const getAllBooks=async(req,res)=>
+const getAllBooks=async(req,res,next)=>
 {  
-    const book= await Book.find()//to find all books 
+    
+    const features= new APIFeatures(Book.find(),req.query).paginate()//to find all books 
+    const book=await features.query
     res.status(200).json({book})
 }
 //creating a new book 
@@ -22,13 +26,17 @@ const  createBook=async(req,res)=>
   if (bookImage.size > maxSize) {
     throw new CustomAPIError('Please upload image smaller 1MB',404);
   }
+  req.ui=short()
+    const pathImage=req.ui+`${bookImage.name}`
   const imagePath = path.join(
     __dirname,
-    '../public/uploads/' + `${bookImage.name}`
+    '../public/uploads/' + pathImage
   )
-    await bookImage.mv(imagePath);
-  req.body.Imageurl=`/uploads/${bookImage.name}`
   
+    await bookImage.mv(imagePath);
+  req.body.Imageurl=`/uploads/${pathImage}`
+  
+   
     const book=await Book.create(req.body)
     res.status(201).json({book})
 }

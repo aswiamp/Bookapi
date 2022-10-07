@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const joi=require('joi');
 const bookSchema = new mongoose.Schema(
     {
         name:{
@@ -9,7 +8,8 @@ const bookSchema = new mongoose.Schema(
         Imageurl: {
 
             
-            type:String
+            type:String,
+            unique:true
     
 
         },
@@ -27,20 +27,4 @@ const bookSchema = new mongoose.Schema(
         }  
 )
 
-bookSchema.methods.joiValidate=function(obj)
-{
-
-
-const valSchema=joi.object({
-
-    name:joi.string().required().min(6).max(56),
-    Imageurl:joi.string(),
-    Author:joi.string().required().min(10).max(30),
-    pages:joi.number().min(100).max(555),
-    price:joi.number().required().min(150)
-
-
-});
-return valSchema.validate(obj)
-}
-module.exports=mongoose.model('book',bookSchema)
+module.exports=mongoose.model('Book',bookSchema)
