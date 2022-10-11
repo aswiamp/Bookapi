@@ -8,23 +8,30 @@ const path=require("path");
 const getAllBooks=async(req,res,next)=>
 {  
     
-    const features= new APIFeatures(Book.find(),req.query).paginate()//to find all books 
-    const book=await features.query
-    res.status(200).json({book})
+  const features= new APIFeatures(Book.find(),req.query).paginate()//to find all books 
+  const book=await features.query
+  const total=await Book.countDocuments({"_id":{"$exists":true}
+   })
+  //console.log(total)
+
+  res.status(200).json({status:"success",
+  count:total,
+  results:book.length,
+  data:book,})
 }
 //creating a new book 
 const  createBook=async(req,res)=>
 {
   if (!req.files) {
-    throw new CustomAPIError('No File Uploaded',404);
+    throw new CustomAPIError('No File Uploaded');
   }
   const bookImage = req.files.Imageurl;
-  if (!bookImage.mimetype.startsWith('image')) {
-    throw new CustomAPIError('Please Upload Image',404);
+  if (!bookImage.mimetype.endsWith('png')) {
+    throw new CustomAPIError('Please Upload png Image');
   }
   const maxSize = 1024 * 1024;
   if (bookImage.size > maxSize) {
-    throw new CustomAPIError('Please upload image smaller 1MB',404);
+    throw new CustomAPIError('Please upload image smaller 1MB');
   }
   req.ui=short()
     const pathImage=req.ui+`${bookImage.name}`
@@ -48,10 +55,10 @@ const getBook= async(req,res)=>
     //if the book is not found then it returns an error
     if(!book)
     {
-        throw new CustomAPIError(`no book with this id: ${bookID}`,404)
+        throw new CustomAPIError(`no book with this id: ${bookID}`)
 
     }
-    res.status(200).json({book})
+    res.status(200).json({book})  
 }
 
 const updateBook= async (req, res) => {
@@ -62,7 +69,7 @@ const updateBook= async (req, res) => {
     })
   
     if (!book) {
-      throw new CustomAPIError(`No book with id : ${bookID}`, 404)
+      throw new CustomAPIError(`No book with id : ${bookID}`)
     }
   
     res.status(200).json({ book })
@@ -75,7 +82,7 @@ const deleteBook=async(req,res)=>
     const book= await Book.findOneAndDelete({_id:bookID})
     if(!book)
     {
-      throw new CustomAPIError(`No book with id:${bookID}`,404)
+      throw new CustomAPIError(`No book with id:${bookID}`)
     }
     res.status(200).json({ book})
 }

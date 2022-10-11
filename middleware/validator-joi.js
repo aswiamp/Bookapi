@@ -19,7 +19,7 @@ const bookSchema=(req,res,next)=>
     //validate request body 
     const {error,value}=schema.validate(req.body,options);
     if(error){
-        throw new CustomAPIError(`validation error:${error.message}`,404)
+        throw new CustomAPIError(`validation error:${error.message}`)
     }
     else{
         req.body=value
