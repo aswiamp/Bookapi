@@ -4,6 +4,7 @@ require("express-async-errors");
 const fileUpload = require("express-fileupload");
 const Auth = require("./routes/auth");
 const Books = require("./routes/books");
+const purchase = require("./routes/purchaseRout");
 const connectDB = require("./db/connect");
 const notFoundMiddleware = require("./middleware/notFound");
 const authenticateUser = require("./middleware/authentication");
@@ -18,10 +19,10 @@ app.use(fileUpload({ useTempFiles: false }));
 //routes
 app.use("/api/v1/auth", Auth);
 app.use("/api/v1/books", authenticateUser, Books);
+app.use("/api/v1/purchase",purchase);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
-app.use(authenticateUser);
 
 const port = process.env.PORT;
 
